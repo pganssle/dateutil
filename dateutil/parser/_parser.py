@@ -1156,8 +1156,8 @@ class parser(object):
             warnings.warn("tzname {tzname} identified but not understood.  "
                           "Pass `tzinfos` argument in order to correctly "
                           "return a timezone-aware datetime.  In a future "
-                          "version, this raise a "
-                          "ValueError.".format(tzname=res.tzname))
+                          "version, this raise an "
+                          "exception.".format(tzname=res.tzname))
             aware = naive
 
         return aware
