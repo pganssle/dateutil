@@ -5,7 +5,7 @@ dateutil - powerful extensions to datetime
 
 |gitter| |readthedocs|
 
-|travis| |appveyor| |pipelines| |coverage|
+|travis| |appveyor| |pipelines|
 
 .. |pypi| image:: https://img.shields.io/pypi/v/python-dateutil.svg?style=flat-square
     :target: https://pypi.org/project/python-dateutil/
@@ -26,10 +26,6 @@ dateutil - powerful extensions to datetime
 .. |pipelines| image:: https://dev.azure.com/pythondateutilazure/dateutil/_apis/build/status/dateutil.dateutil?branchName=master
     :target: https://dev.azure.com/pythondateutilazure/dateutil/_build/latest?definitionId=1&branchName=master
     :alt: azure pipelines build status
-
-.. |coverage| image:: https://codecov.io/gh/dateutil/dateutil/branch/master/graphs/badge.svg?branch=master
-    :target: https://codecov.io/gh/dateutil/dateutil?branch=master
-    :alt: Code coverage
 
 .. |gitter| image:: https://badges.gitter.im/dateutil/dateutil.svg
    :alt: Join the chat at https://gitter.im/dateutil/dateutil
