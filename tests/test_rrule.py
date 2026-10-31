@@ -1,6 +1,7 @@
 import copy
 import itertools
 import pickle
+import threading
 import unittest
 from datetime import date, datetime, timedelta
 from functools import partial
@@ -5091,3 +5092,43 @@ def test_roundtrip_cache_setting_smoke(roundtrip, kind, state):
         assert restored._cache is None
     assert original._cache == original_cache
     assert list(restored) == list(original)
+
+
+def _list_with_timeout(iterable, timeout=5):
+    # Lock bugs in the cache hang rather than fail, so consume in a daemon
+    # thread to turn a hang into a test failure.
+    result = []
+    thread = threading.Thread(
+        target=result.extend, args=(iterable,), daemon=True
+    )
+    thread.start()
+    thread.join(timeout)
+    assert not thread.is_alive(), "Iteration did not finish"
+    return result
+
+
+def test_cached_rrule_iterators_started_before_cache_complete():
+    dtstart = datetime(2024, 1, 1)
+    expected = list(rrule(DAILY, dtstart=dtstart, count=15))
+    rr = rrule(DAILY, dtstart=dtstart, count=15, cache=True)
+
+    started = [iter(rr), iter(rr)]
+    for iterator in started:
+        next(iterator)
+
+    # Another iterator completes the cache after the others have started.
+    assert _list_with_timeout(rr) == expected
+    for iterator in started:
+        assert _list_with_timeout(iterator) == expected[1:]
+
+
+def test_cached_rrule_included_twice_in_rruleset():
+    dtstart = datetime(2024, 1, 1)
+    expected = list(rrule(DAILY, dtstart=dtstart, count=15))
+    rr = rrule(DAILY, dtstart=dtstart, count=15, cache=True)
+
+    rrset = rruleset()
+    rrset.rrule(rr)
+    rrset.rrule(rr)
+
+    assert _list_with_timeout(rrset) == expected
